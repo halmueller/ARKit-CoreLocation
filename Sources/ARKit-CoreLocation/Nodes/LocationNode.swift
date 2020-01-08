@@ -92,7 +92,7 @@ open class LocationNode: SCNNode {
     /// then add an explanation of what happens when `scaleRelativeToDistance` is true. If "must",
     /// then enforce that with a property `didSet` observer. What happens when `scalingScheme`
     /// is not `ScalingScheme.normal`?
-    public var shouldStackAnnotation = false
+    public var stackable = false
 
     public init(location: CLLocation?, tag: String? = nil) {
         self.location = location
@@ -134,8 +134,8 @@ open class LocationNode: SCNNode {
         if locationConfirmed && (distance > 100
             || continuallyAdjustNodePositionWhenWithinRange
             || setup
-            || shouldStackAnnotation) {
-            if distance > 100 || shouldStackAnnotation {
+            || stackable) {
+            if distance > 100 || stackable {
                 //If the item is too far away, bring it closer and scale it down
                 let scale = 100 / Float(distance)
 
