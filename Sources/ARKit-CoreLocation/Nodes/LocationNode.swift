@@ -117,6 +117,8 @@ open class LocationNode: SCNNode {
         }
     }
 
+    /// Called from `updatePositionAndScale()`. The call in `LocationNode` discards the result,
+    /// but the call in `LocationAnnotationNode` uses the result for rescaling the label.
     internal func adjustedDistance(setup: Bool, position: SCNVector3, locationNodeLocation: CLLocation,
                                    locationManager: SceneLocationManager) -> CLLocationDistance {
         guard let location = locationManager.currentLocation else {
@@ -199,7 +201,12 @@ open class LocationNode: SCNNode {
     }
 
     @available(iOS 11.0, *)
-    /// TODO: write a real docstring. Consider renaming.
+    /// Adjust the `position` of the first `childNode` up, relative to its origin, if it is obscured by any node in `locationNodes`.
+     ///
+     /// - Parameters:
+     ///     - scenePosition: current scene viewpoint.
+     ///     - locationNodes: all nodes to be tested against. Might include `self`, which will be ignored.
+     ///     - stackingOffset: number of meters to raise the node (along the Y axis) if a collision is detected.
     func stackNode(scenePosition: SCNVector3?, locationNodes: [LocationNode], stackingOffset: Float) {
 
         // Detecting collision
@@ -247,6 +254,7 @@ open class LocationNode: SCNNode {
     }
 
     // FIXME: use SIMD and provide a unit test.
+    /// Returns radians.
     private func angleBetweenTwoPointsAndUser(scenePosition: SCNVector3?, pointA: SCNVector3, pointB: SCNVector3) -> CGFloat {
         if let userPosition = scenePosition {
             let A = CGPoint(x: CGFloat(pointA.x), y: CGFloat(pointA.z))
